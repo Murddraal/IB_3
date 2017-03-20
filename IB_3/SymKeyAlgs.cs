@@ -78,7 +78,7 @@ namespace IB_3
                 csDecrypt.Read(fromEncrypt, 0, fromEncrypt.Length);
 
                 //Convert the buffer into a string and return it.
-                return System.Text.Encoding.UTF8.GetString(fromEncrypt);//new ASCIIEncoding().GetString(fromEncrypt).TrimEnd('\0');
+                return System.Text.Encoding.UTF8.GetString(fromEncrypt).TrimEnd('\b');//new ASCIIEncoding().GetString(fromEncrypt).TrimEnd('\0');
             }
         }
     }

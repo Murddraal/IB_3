@@ -14,8 +14,12 @@ namespace IB_3
 {
     public partial class Form1 : Form
     {
-        string key_file = "";
-        string iv_file = "";
+        //string key_sym = "";
+        //string iv_sym = "";
+        byte[] key_sym = new byte[0];
+        byte[] iv_sym = new byte[0];
+        string DataToEncryptSym = "";
+        byte[] DataToDecryptSym = new byte[0];
 
         public Form1()
         {
@@ -34,7 +38,42 @@ namespace IB_3
 
         }
 
-        private void btn_gen_key_Click(object sender, EventArgs e)
+        private void btn_sym_data_encr_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                DataToEncryptSym = File.ReadAllText(openFileDialog1.FileName);
+            }
+        }
+
+        private void btn_sym_data_decr_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                DataToDecryptSym = File.ReadAllBytes(openFileDialog1.FileName);
+                MessageBox.Show("Файл для дешифровки введён!");
+            }
+        }
+
+        private void btn_sym_data_encr_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                var crypt_mess_sym = SymKeyAlgs.THREEDES.Encrypt(DataToEncryptSym, key_sym, iv_sym);
+                txtbx_sym_encr.Text = String.Concat(crypt_mess_sym.Select(i => i.ToString() + " "));
+
+                File.WriteAllBytes("EncrData", crypt_mess_sym);
+            }
+            catch (CryptographicException)
+            {
+                if (key_sym.Length == 0)
+                    MessageBox.Show("Введите ключ!");
+                if (iv_sym.Length == 0)
+                    MessageBox.Show("Введите вектор!");
+            }
+        }
+
+        private void btn_sym_gen_key_Click(object sender, EventArgs e)
         {
             var key = SymKeyAlgs.THREEDES.GenerateKey();
 
@@ -48,7 +87,7 @@ namespace IB_3
             }
         }
 
-        private void btn_gen_iv_Click(object sender, EventArgs e)
+        private void btn_sym_gen_iv_Click(object sender, EventArgs e)
         {
             var iv = SymKeyAlgs.THREEDES.GenerateIV();
 
@@ -62,91 +101,60 @@ namespace IB_3
             }
         }
 
-        private void btn_read_key_Click(object sender, EventArgs e)
+        private void btn_sym_read_key_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                key_file = openFileDialog1.FileName;
+                //key_sym = openFileDialog1.FileName;
+                key_sym = File.ReadAllBytes(openFileDialog1.FileName);
                 MessageBox.Show("Ключ введен");
             }
         }
 
-        private void btn_read_iv_Click(object sender, EventArgs e)
+        private void btn_sym_read_iv_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                iv_file = openFileDialog1.FileName;
+                //iv_sym = openFileDialog1.FileName;
+                iv_sym = File.ReadAllBytes(openFileDialog1.FileName);
                 MessageBox.Show("Вектор введен");
             }
         }
 
-        private void btn_sym_data_encr_Click(object sender, EventArgs e)
+        private void btn_sym_data_decr_Click_1(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            try
             {
-                var mess = File.ReadAllText(openFileDialog1.FileName);
-                byte[] key;
-                byte[] iv;
-
-                using (FileStream fs = new FileStream(key_file, FileMode.Open))
-                {
-                    key = new byte[fs.Length];
-                    fs.Read(key, 0, (int)fs.Length);
-                }
-                using (FileStream fs = new FileStream(iv_file, FileMode.Open))
-                {
-                    iv = new byte[fs.Length];
-                    fs.Read(iv, 0, (int)fs.Length);
-                }
-
-                var crypt_mess_sym = SymKeyAlgs.THREEDES.Encrypt(mess, key, iv);
-                txtbx_sym_encr.Text = String.Concat(crypt_mess_sym.Select(i => i.ToString() + " "));
-
-                File.WriteAllBytes("EncrData", crypt_mess_sym);
-            }
-        }
-
-        private void btn_sym_data_decr_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                var mess = File.ReadAllBytes(openFileDialog1.FileName);
-                byte[] key;
-                byte[] iv;
-
-                using (FileStream fs = new FileStream(key_file, FileMode.Open))
-                {
-                    key = new byte[fs.Length];
-                    fs.Read(key, 0, (int)fs.Length);
-                }
-                using (FileStream fs = new FileStream(iv_file, FileMode.Open))
-                {
-                    iv = new byte[fs.Length];
-                    fs.Read(iv, 0, (int)fs.Length);
-                }
-
-                var crypt_mess_sym = SymKeyAlgs.THREEDES.Decrypt(mess, key, iv);
+                var crypt_mess_sym = SymKeyAlgs.THREEDES.Decrypt(DataToDecryptSym, key_sym, iv_sym);
                 txtbx_sym_decr.Text = crypt_mess_sym;//String.Concat(crypt_mess_sym.Select(i => i.ToString() + " "));
 
                 File.WriteAllText("DecrData.txt", txtbx_sym_decr.Text);
+            }
+            catch
+            {
+                if (key_sym.Length == 0)
+                    MessageBox.Show("Введите ключ!");
+                if (iv_sym.Length == 0)
+                    MessageBox.Show("Введите вектор!");
+                if (DataToDecryptSym.Length == 0)
+                    MessageBox.Show("Введите данные!");
+
             }
         }
 
         RSACryptoServiceProvider RSA_sign = new RSACryptoServiceProvider();
         RSACryptoServiceProvider RSA_assym = new RSACryptoServiceProvider();
         RSAParameters key_public_assym, key_private_assym;
-        int k = 0;
+        byte[] dataToDecrypt = new byte[0];
+        byte[] dataToEncrypt = new byte[0];
 
         private void btn_asym_data_encr_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            try
             {
                 //Create a UnicodeEncoder to convert between byte array and string.
                 UnicodeEncoding ByteConverter = new UnicodeEncoding();
 
-                //Create byte arrays to hold original, encrypted, and decrypted data.
-                var dataToEncrypt = File.ReadAllBytes(openFileDialog1.FileName);
-                //byte[] dataToEncrypt = ByteConverter.GetBytes("Data to Encrypt");
                 byte[] encryptedData;
 
                 //Create a new instance of RSACryptoServiceProvider to generate
@@ -157,18 +165,82 @@ namespace IB_3
 
                 File.WriteAllBytes("EncrAsymData", encryptedData);
             }
-
+            catch (CryptographicException)
+            {
+                MessageBox.Show("Открытый ключ не введен!");
+            }
         }
 
         private void btn_asym_data_decr_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                //Create byte arrays to hold original, encrypted, and decrypted data.
+                dataToDecrypt = File.ReadAllBytes(openFileDialog1.FileName);
+                MessageBox.Show("Данные для расшифровки введены!");
+            }
+        }
+
+        private void btn_gen_rsa_keys_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Title = "Save private key";
+            RSA_assym.ExportParameters(true);
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+                File.WriteAllText(saveFileDialog1.FileName, RSA_assym.ToXmlString(true));
+            }
+
+            saveFileDialog1.Title = "Save public key";
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+                File.WriteAllText(saveFileDialog1.FileName, RSA_assym.ToXmlString(false));
+            }
+        }
+
+        private void btn_read_rsa_publ_key_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    RSA_assym.FromXmlString(File.ReadAllText(openFileDialog1.FileName));
+                    key_public_assym = RSA_assym.ExportParameters(false);
+                    MessageBox.Show("Открытый ключ введен");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Неверные данные!");
+            }
+        }
+
+        private void btn_read_rsa_priv_key_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    RSA_assym.FromXmlString(File.ReadAllText(openFileDialog1.FileName));
+                    key_private_assym = RSA_assym.ExportParameters(true);
+                    MessageBox.Show("Закрытый ключ введен");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Неверные данные!");
+            }
+        }
+
+        private void btn_rsa_data_decr_Click(object sender, EventArgs e)
+        {
+            try
+            {
                 //Create a UnicodeEncoder to convert between byte array and string.
                 UnicodeEncoding ByteConverter = new UnicodeEncoding();
 
                 //Create byte arrays to hold original, encrypted, and decrypted data.
-                var dataToDecrypt = File.ReadAllBytes(openFileDialog1.FileName);
                 byte[] decryptedData;
 
                 //Create a new instance of RSACryptoServiceProvider to generate
@@ -180,60 +252,21 @@ namespace IB_3
 
                 File.WriteAllText("DencrAsymData.txt", txtbx_asym_decr.Text);
             }
-        }
+            catch (CryptographicException)
+            {
+                if(dataToEncrypt.Length == 0)
+                    MessageBox.Show("Введите данные для расшифровки!");
 
-        private void btn_gen_rsa_publ_key_Click(object sender, EventArgs e)
-        {
-            if (k == 2)
-            {
-                RSA_assym = new RSACryptoServiceProvider();
-                k = 0;
-            }
-            ++k;
-            RSA_assym.ExportParameters(true);
-            saveFileDialog1.ShowDialog();
-            if (saveFileDialog1.FileName != "")
-            {
-                File.WriteAllText(saveFileDialog1.FileName, RSA_assym.ToXmlString(false));
+                MessageBox.Show("Введите закрытый ключ!");
             }
         }
 
-        private void btn_gen_rsa_priv_key_Click(object sender, EventArgs e)
-        {
-            if (k == 2)
-            {
-                RSA_assym = new RSACryptoServiceProvider();
-                k = 0;
-            }
-            ++k;
-
-            RSA_assym.ExportParameters(true);
-            saveFileDialog1.ShowDialog();
-            if (saveFileDialog1.FileName != "")
-            {
-                File.WriteAllText(saveFileDialog1.FileName, RSA_assym.ToXmlString(true));
-            }
-        }
-
-        private void btn_read_rsa_publ_key_Click(object sender, EventArgs e)
+        private void btn_asym_read_data_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                RSA_assym.FromXmlString(File.ReadAllText(openFileDialog1.FileName));
-                key_public_assym = RSA_assym.ExportParameters(false);
-                MessageBox.Show("Открытый ключ введен");
-
-            }
-        }
-
-        private void btn_read_rsa_priv_key_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                RSA_assym.FromXmlString(File.ReadAllText(openFileDialog1.FileName));
-                key_private_assym = RSA_assym.ExportParameters(true);
-                MessageBox.Show("Закрытый ключ введен");
-
+                dataToEncrypt = File.ReadAllBytes(openFileDialog1.FileName);
+                MessageBox.Show("Данные для шифрования введены!");
             }
         }
 

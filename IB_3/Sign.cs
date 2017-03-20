@@ -9,13 +9,14 @@ namespace IB_3
 {
     class Sign
     {
-        static public byte[] ToSign(string data, out byte[] hash, RSAParameters RSAKeyInfo)
+        static public byte[] ToSign(string data, RSAParameters RSAKeyInfo)
         {
             //Create a new instance of RSACryptoServiceProvider.
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
             {
                 rsa.ImportParameters(RSAKeyInfo);
                 //The hash to sign.
+                byte[] hash;
                 using (SHA256 sha256 = SHA256.Create())
                 {
                     hash = sha256.ComputeHash(Encoding.ASCII.GetBytes(data));
@@ -34,24 +35,21 @@ namespace IB_3
 
         }
 
-        static public bool Verify(byte[] hash, byte[] signedHash, RSAParameters RSAKeyInfo)
+        static public bool Verify(string data, byte[] signedData, RSAParameters RSAKeyInfo)
         {
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
             {
                 rsa.ImportParameters(RSAKeyInfo);
                 //RSACryptoServiceProvider to transfer the key information.
                 RSAPKCS1SignatureDeformatter RSADeformatter = new RSAPKCS1SignatureDeformatter(rsa);
-                
+                byte[] hash;
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    hash = sha256.ComputeHash(Encoding.ASCII.GetBytes(data));
+                }
                 RSADeformatter.SetHashAlgorithm("SHA256");
                 //Verify the hash and display the results to the console. 
-                if (RSADeformatter.VerifySignature(hash, signedHash))
-                {
-                    return true;
-                }
-                else
-                {
-                    return true;
-                }
+                return (RSADeformatter.VerifySignature(hash, signedData));
             }
         }
 

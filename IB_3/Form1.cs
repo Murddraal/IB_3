@@ -14,17 +14,15 @@ namespace IB_3
 {
     public partial class Form1 : Form
     {
-        //string key_sym = "";
-        //string iv_sym = "";
-        byte[] key_sym = new byte[0];
-        byte[] iv_sym = new byte[0];
-        string DataToEncryptSym = "";
-        byte[] DataToDecryptSym = new byte[0];
-
         public Form1()
         {
             InitializeComponent();
         }
+
+        byte[] key_sym = new byte[0];
+        byte[] iv_sym = new byte[0];
+        string DataToEncryptSym = "";
+        byte[] DataToDecryptSym = new byte[0];
 
         private void btn_hashing_Click(object sender, EventArgs e)
         {
@@ -37,7 +35,6 @@ namespace IB_3
 
 
         }
-
         private void btn_sym_data_encr_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -45,7 +42,6 @@ namespace IB_3
                 DataToEncryptSym = File.ReadAllText(openFileDialog1.FileName);
             }
         }
-
         private void btn_sym_data_decr_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -54,7 +50,6 @@ namespace IB_3
                 MessageBox.Show("Файл для дешифровки введён!");
             }
         }
-
         private void btn_sym_data_encr_Click_1(object sender, EventArgs e)
         {
             try
@@ -72,7 +67,6 @@ namespace IB_3
                     MessageBox.Show("Введите вектор!");
             }
         }
-
         private void btn_sym_gen_key_Click(object sender, EventArgs e)
         {
             var key = SymKeyAlgs.THREEDES.GenerateKey();
@@ -86,7 +80,6 @@ namespace IB_3
                 }
             }
         }
-
         private void btn_sym_gen_iv_Click(object sender, EventArgs e)
         {
             var iv = SymKeyAlgs.THREEDES.GenerateIV();
@@ -100,7 +93,6 @@ namespace IB_3
                 }
             }
         }
-
         private void btn_sym_read_key_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -110,7 +102,6 @@ namespace IB_3
                 MessageBox.Show("Ключ введен");
             }
         }
-
         private void btn_sym_read_iv_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -120,7 +111,6 @@ namespace IB_3
                 MessageBox.Show("Вектор введен");
             }
         }
-
         private void btn_sym_data_decr_Click_1(object sender, EventArgs e)
         {
             try
@@ -142,7 +132,6 @@ namespace IB_3
             }
         }
 
-        RSACryptoServiceProvider RSA_sign = new RSACryptoServiceProvider();
         RSACryptoServiceProvider RSA_assym = new RSACryptoServiceProvider();
         RSAParameters key_public_assym, key_private_assym;
         byte[] dataToDecrypt = new byte[0];
@@ -170,7 +159,6 @@ namespace IB_3
                 MessageBox.Show("Открытый ключ не введен!");
             }
         }
-
         private void btn_asym_data_decr_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -180,7 +168,6 @@ namespace IB_3
                 MessageBox.Show("Данные для расшифровки введены!");
             }
         }
-
         private void btn_gen_rsa_keys_Click(object sender, EventArgs e)
         {
             saveFileDialog1.Title = "Save private key";
@@ -198,7 +185,6 @@ namespace IB_3
                 File.WriteAllText(saveFileDialog1.FileName, RSA_assym.ToXmlString(false));
             }
         }
-
         private void btn_read_rsa_publ_key_Click(object sender, EventArgs e)
         {
             try
@@ -215,7 +201,6 @@ namespace IB_3
                 MessageBox.Show("Неверные данные!");
             }
         }
-
         private void btn_read_rsa_priv_key_Click(object sender, EventArgs e)
         {
             try
@@ -232,7 +217,6 @@ namespace IB_3
                 MessageBox.Show("Неверные данные!");
             }
         }
-
         private void btn_rsa_data_decr_Click(object sender, EventArgs e)
         {
             try
@@ -260,7 +244,6 @@ namespace IB_3
                 MessageBox.Show("Введите закрытый ключ!");
             }
         }
-
         private void btn_asym_read_data_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -269,6 +252,119 @@ namespace IB_3
                 MessageBox.Show("Данные для шифрования введены!");
             }
         }
+
+        RSACryptoServiceProvider RSA_sign = new RSACryptoServiceProvider();
+        RSAParameters key_public_sign, key_private_sign;
+        string dataToSign = "";
+        byte[] sign = new byte[0];
+
+        private void btn_cds_read_private_key_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    RSA_sign.FromXmlString(File.ReadAllText(openFileDialog1.FileName));
+                    key_private_sign = RSA_sign.ExportParameters(true);
+                    MessageBox.Show("Закрытый ключ введен");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Неверные данные!");
+            }
+        }
+        private void btn_cds_read_open_key_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    RSA_sign.FromXmlString(File.ReadAllText(openFileDialog1.FileName));
+                    key_public_sign = RSA_sign.ExportParameters(false);
+                    MessageBox.Show("Открытый ключ введен");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Неверные данные!");
+            }
+        }
+        private void btn_cds_read_data_to_sign_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                dataToSign = File.ReadAllText(openFileDialog1.FileName);
+                MessageBox.Show("Данные введены!");
+            }
+        }
+
+        private void btn_cds_read_sign_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    sign = File.ReadAllBytes(openFileDialog1.FileName);
+                    MessageBox.Show("Подпись введена");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Неверные данные!");
+            }
+        }
+
+        private void btn_cds_verify_data_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var verify = Sign.Verify(dataToSign, sign, key_public_sign);
+                MessageBox.Show("Результат проверки: " + verify.ToString());
+            }
+            catch
+            {
+                if (sign.Length == 0)
+                    MessageBox.Show("Введте подпись!");
+                MessageBox.Show("Введите ключ!");
+            }
+        }
+
+        private void btn_cds_sign_data_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                saveFileDialog1.Title = "Подпись";
+                saveFileDialog1.ShowDialog();
+                if (saveFileDialog1.FileName != "")
+                {
+                    File.WriteAllBytes(saveFileDialog1.FileName, Sign.ToSign(dataToSign, key_private_sign));
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Ключ не введён!");
+            }
+        }
+        private void btn_cds_gen_keys_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Title = "Save private key";
+            RSA_assym.ExportParameters(true);
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+                File.WriteAllText(saveFileDialog1.FileName, RSA_sign.ToXmlString(true));
+            }
+
+            saveFileDialog1.Title = "Save public key";
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+                File.WriteAllText(saveFileDialog1.FileName, RSA_sign.ToXmlString(false));
+            }
+        }
+
+
 
     }
 }

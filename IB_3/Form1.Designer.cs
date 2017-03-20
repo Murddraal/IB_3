@@ -56,12 +56,20 @@
             this.btn_asym_read_data = new System.Windows.Forms.Button();
             this.btn_gen_rsa_keys = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.btn_cds_verify_data = new System.Windows.Forms.Button();
+            this.btn_cds_sign_data = new System.Windows.Forms.Button();
+            this.btn_cds_read_data_to_sign = new System.Windows.Forms.Button();
+            this.btn_cds_read_sign = new System.Windows.Forms.Button();
+            this.btn_cds_read_open_key = new System.Windows.Forms.Button();
+            this.btn_cds_read_private_key = new System.Windows.Forms.Button();
+            this.btn_cds_gen_keys = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_hashing
@@ -359,12 +367,89 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.btn_cds_verify_data);
+            this.tabPage4.Controls.Add(this.btn_cds_sign_data);
+            this.tabPage4.Controls.Add(this.btn_cds_read_data_to_sign);
+            this.tabPage4.Controls.Add(this.btn_cds_read_sign);
+            this.tabPage4.Controls.Add(this.btn_cds_read_open_key);
+            this.tabPage4.Controls.Add(this.btn_cds_read_private_key);
+            this.tabPage4.Controls.Add(this.btn_cds_gen_keys);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Size = new System.Drawing.Size(647, 303);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Sign";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // btn_cds_verify_data
+            // 
+            this.btn_cds_verify_data.Location = new System.Drawing.Point(256, 161);
+            this.btn_cds_verify_data.Name = "btn_cds_verify_data";
+            this.btn_cds_verify_data.Size = new System.Drawing.Size(116, 35);
+            this.btn_cds_verify_data.TabIndex = 0;
+            this.btn_cds_verify_data.Text = "Проверить подпись";
+            this.btn_cds_verify_data.UseVisualStyleBackColor = true;
+            this.btn_cds_verify_data.Click += new System.EventHandler(this.btn_cds_verify_data_Click);
+            // 
+            // btn_cds_sign_data
+            // 
+            this.btn_cds_sign_data.Location = new System.Drawing.Point(131, 46);
+            this.btn_cds_sign_data.Name = "btn_cds_sign_data";
+            this.btn_cds_sign_data.Size = new System.Drawing.Size(116, 35);
+            this.btn_cds_sign_data.TabIndex = 0;
+            this.btn_cds_sign_data.Text = "Подписать файл";
+            this.btn_cds_sign_data.UseVisualStyleBackColor = true;
+            this.btn_cds_sign_data.Click += new System.EventHandler(this.btn_cds_sign_data_Click);
+            // 
+            // btn_cds_read_data_to_sign
+            // 
+            this.btn_cds_read_data_to_sign.Location = new System.Drawing.Point(389, 46);
+            this.btn_cds_read_data_to_sign.Name = "btn_cds_read_data_to_sign";
+            this.btn_cds_read_data_to_sign.Size = new System.Drawing.Size(116, 35);
+            this.btn_cds_read_data_to_sign.TabIndex = 0;
+            this.btn_cds_read_data_to_sign.Text = "Ввести данные";
+            this.btn_cds_read_data_to_sign.UseVisualStyleBackColor = true;
+            this.btn_cds_read_data_to_sign.Click += new System.EventHandler(this.btn_cds_read_data_to_sign_Click);
+            // 
+            // btn_cds_read_sign
+            // 
+            this.btn_cds_read_sign.Location = new System.Drawing.Point(511, 67);
+            this.btn_cds_read_sign.Name = "btn_cds_read_sign";
+            this.btn_cds_read_sign.Size = new System.Drawing.Size(116, 35);
+            this.btn_cds_read_sign.TabIndex = 0;
+            this.btn_cds_read_sign.Text = "Ввести подпись";
+            this.btn_cds_read_sign.UseVisualStyleBackColor = true;
+            this.btn_cds_read_sign.Click += new System.EventHandler(this.btn_cds_read_sign_Click);
+            // 
+            // btn_cds_read_open_key
+            // 
+            this.btn_cds_read_open_key.Location = new System.Drawing.Point(511, 26);
+            this.btn_cds_read_open_key.Name = "btn_cds_read_open_key";
+            this.btn_cds_read_open_key.Size = new System.Drawing.Size(116, 35);
+            this.btn_cds_read_open_key.TabIndex = 0;
+            this.btn_cds_read_open_key.Text = "Ввести открытый ключ";
+            this.btn_cds_read_open_key.UseVisualStyleBackColor = true;
+            this.btn_cds_read_open_key.Click += new System.EventHandler(this.btn_cds_read_open_key_Click);
+            // 
+            // btn_cds_read_private_key
+            // 
+            this.btn_cds_read_private_key.Location = new System.Drawing.Point(9, 68);
+            this.btn_cds_read_private_key.Name = "btn_cds_read_private_key";
+            this.btn_cds_read_private_key.Size = new System.Drawing.Size(116, 35);
+            this.btn_cds_read_private_key.TabIndex = 0;
+            this.btn_cds_read_private_key.Text = "Ввести закрытый ключ";
+            this.btn_cds_read_private_key.UseVisualStyleBackColor = true;
+            this.btn_cds_read_private_key.Click += new System.EventHandler(this.btn_cds_read_private_key_Click);
+            // 
+            // btn_cds_gen_keys
+            // 
+            this.btn_cds_gen_keys.Location = new System.Drawing.Point(9, 26);
+            this.btn_cds_gen_keys.Name = "btn_cds_gen_keys";
+            this.btn_cds_gen_keys.Size = new System.Drawing.Size(116, 36);
+            this.btn_cds_gen_keys.TabIndex = 0;
+            this.btn_cds_gen_keys.Text = "Сгенерировать ключи";
+            this.btn_cds_gen_keys.UseVisualStyleBackColor = true;
+            this.btn_cds_gen_keys.Click += new System.EventHandler(this.btn_cds_gen_keys_Click);
             // 
             // openFileDialog1
             // 
@@ -385,6 +470,7 @@
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -420,6 +506,13 @@
         private System.Windows.Forms.Button btn_rsa_data_decr;
         private System.Windows.Forms.Button btn_sym_data_encr;
         private System.Windows.Forms.Button btn_sym_data_decr;
+        private System.Windows.Forms.Button btn_cds_read_private_key;
+        private System.Windows.Forms.Button btn_cds_gen_keys;
+        private System.Windows.Forms.Button btn_cds_sign_data;
+        private System.Windows.Forms.Button btn_cds_read_data_to_sign;
+        private System.Windows.Forms.Button btn_cds_verify_data;
+        private System.Windows.Forms.Button btn_cds_read_open_key;
+        private System.Windows.Forms.Button btn_cds_read_sign;
     }
 }
 
